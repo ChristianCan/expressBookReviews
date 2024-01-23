@@ -87,6 +87,16 @@ async function getBooksAsync(url) {
   }
 }
 
+//Task-11 function (promises)
+function getBookDetailsAsync(url) {
+  return axios
+    .get(url)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
 // Task-10 Using async-await with Axios - getting the list of books
 public_users.get("/async-await", async function (req, res) {
   try {
@@ -108,6 +118,20 @@ public_users.get("/async-await/isbn/:isbn", async function (req, res) {
     console.error(error);
     res.status(500).json({ message: "Error retrieving book details" });
   }
+});
+
+// Task-11 Using Promises - getting the book details based on ISBN
+public_users.get("/promises/isbn/:isbn", function (req, res) {
+  const bookIsbn = req.params.isbn;
+
+  getBookDetailsAsync(`http://localhost:5000/isbn/${bookIsbn}`)
+    .then((book) => {
+      res.send(book);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ message: "Error retrieving book details" });
+    });
 });
 
 // Task-12 Using async-await with Axios -  getting the book details based on Author
